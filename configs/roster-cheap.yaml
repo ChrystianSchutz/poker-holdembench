@@ -1,0 +1,54 @@
+# Full cheap roster used by probes and the cheap league.
+name: roster-cheap
+variant: nl
+deals: 0
+budget_usd: 0.6
+agents:
+  - {id: equity_tag, kind: equity_tag, tier: bot}
+  - {id: rock, kind: rock, tier: bot}
+  - {id: calling_station, kind: calling_station, tier: bot}
+  - {id: maniac, kind: maniac, tier: bot}
+  - {id: random, kind: random, tier: bot}
+  # Decision models (OpenRouter /alpha/decisions)
+  - {id: jev, kind: decision, tier: decision, model: typesafe/jev-1.13, max_cost_per_call: 0.002}
+  - {id: solar_decide, kind: decision, tier: decision, model: upstage/solar-decide, max_cost_per_call: 0.002}
+  - {id: mercury_decide, kind: decision, tier: decision, model: "inception/mercury-decide:free", max_cost_per_call: 0.002, min_interval_s: 3.1, concurrency: 4}
+  - {id: pplx_decider, kind: decision, tier: decision, model: perplexity/pplx-decider-v1-27b, max_cost_per_call: 0.002}
+  # Cheap chat LLMs, first-party or previously validated routes, reasoning on (hidden)
+  - id: luna
+    kind: chat
+    tier: cheap
+    model: openai/gpt-6-luna
+    max_tokens: 32768
+    max_cost_per_call: 0.02
+    provider: {only: [openai], allow_fallbacks: false}
+  - id: muse_contrib
+    kind: chat
+    tier: cheap
+    model: meta/muse-spark-1.3-contributor
+    max_tokens: 32768
+    max_cost_per_call: 0.012
+    provider: {only: [meta], allow_fallbacks: false}
+  - id: deepseek_flash
+    kind: chat
+    tier: cheap
+    model: deepseek/deepseek-v4.1-flash
+    max_tokens: 32768
+    max_cost_per_call: 0.012
+    provider: {only: [decart/fp4], allow_fallbacks: false}
+  - id: glm_flash
+    kind: chat
+    tier: cheap
+    model: z-ai/glm-5.3-flash
+    structured: json_object
+    reasoning: {effort: high, exclude: true}
+    max_tokens: 32768
+    max_cost_per_call: 0.012
+    provider: {only: [z-ai/fp8], allow_fallbacks: false}
+  - id: mimo_flash
+    kind: chat
+    tier: cheap
+    model: xiaomi/mimo-v2.6-flash
+    max_tokens: 32768
+    max_cost_per_call: 0.012
+    provider: {only: [xiaomi/fp8], allow_fallbacks: false}

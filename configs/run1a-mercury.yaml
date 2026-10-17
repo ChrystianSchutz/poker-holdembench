@@ -1,0 +1,21 @@
+# Run 1A (Mercury Decide part): the free endpoint is rate limited (paced 3.1 s, daily cap),
+# so it plays every other decision model and bot over the first 40 deals of run 1A.
+name: run1a-mercury
+variant: nl
+deals: 40
+deal_seed: 100000
+budget_usd: 0.2
+match_concurrency: 16
+agents:
+  - {id: equity_tag, kind: equity_tag, tier: bot}
+  - {id: rock, kind: rock, tier: bot}
+  - {id: calling_station, kind: calling_station, tier: bot}
+  - {id: maniac, kind: maniac, tier: bot}
+  - {id: random, kind: random, tier: bot}
+  - {id: jev, kind: decision, tier: decision, model: typesafe/jev-1.13, max_cost_per_call: 0.002}
+  - {id: solar_decide, kind: decision, tier: decision, model: upstage/solar-decide, max_cost_per_call: 0.002}
+  - {id: mercury_decide, kind: decision, tier: decision, model: "inception/mercury-decide:free", max_cost_per_call: 0.002, min_interval_s: 3.1, concurrency: 4}
+  - {id: pplx_decider, kind: decision, tier: decision, model: perplexity/pplx-decider-v1-27b, max_cost_per_call: 0.002, concurrency: 2, min_interval_s: 0.5}
+schedule:
+  mode: focus
+  focus: [mercury_decide]

@@ -1,0 +1,63 @@
+[project]
+name = "holdembench"
+version = "0.1.0"
+description = "Duplicate heads-up hold'em benchmark for chat LLMs, typed decision models and classic poker bots."
+readme = "README.md"
+authors = [{ name = "Chrystian Schutz", email = "chrystian.schutz@gmail.com" }]
+license = { text = "MIT" }
+requires-python = ">=3.13"
+keywords = ["benchmark", "llm", "poker", "texas-holdem", "elo", "agents"]
+dependencies = [
+    "httpx>=0.28.1",
+    "matplotlib>=3.10",
+    "numpy>=2.3",
+    "orjson>=3.11",
+    "phevaluator>=0.6.0",
+    "pokerkit>=0.7.6",
+    "pydantic>=2.12",
+    "python-dotenv>=1.1",
+    "pyyaml>=6.0.2",
+    "rich>=14.0",
+    "scipy>=1.16",
+    "typer>=0.20",
+]
+
+[project.urls]
+Repository = "https://github.com/ChrystianSchutz/poker-holdembench"
+Dataset = "https://huggingface.co/datasets/chrystians/poker-holdembench"
+"Write-up" = "https://chrystianschutz.com/blog/ai-poker-holdembench/"
+
+[project.scripts]
+holdembench = "holdembench.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.9.18,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "markdown>=3.11",
+    "mypy>=1.18",
+    "pytest>=8.4",
+    "ruff>=0.14",
+    "types-pyyaml>=6.0.12",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RET", "PTH", "RUF", "ASYNC", "PL"]
+ignore = ["PLR2004", "PLR0913", "PLR0911", "PLR0912", "PLR0915", "PLW2901", "E501", "PLC0415", "RUF001", "RUF002", "PLR0917"]
+
+[tool.mypy]
+python_version = "3.13"
+files = ["src"]
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+testpaths = ["tests"]
+filterwarnings = ["ignore::UserWarning:pokerkit.*"]

@@ -1,0 +1,61 @@
+# Run 2 (authorised 2026-10-04): two frontier models against bridge agents from Run 1.
+# Each frontier model plays the best script (equity_tag), the two best decision models (Jev, pplx)
+# and the two strongest affordable cheap LLMs (Luna, Muse Spark Contributor), plus each other.
+# The bridges already have Run 1 ratings, so one joint fit places the frontier models on the same scale.
+# 11 pairs x 20 duplicate deals = 440 hands (240 per frontier model).
+# Measured on 4 probe spots: Sol ~$0.0037 and Opus ~$0.0063 per decision; forecast ~$8-11 incl. margin.
+# Both frontier models use their default reasoning ({enabled: true, exclude: true}).
+name: run2-frontier
+variant: nl
+deals: 20
+deal_seed: 300000
+budget_usd: 14.0
+match_concurrency: 11
+agents:
+  - {id: equity_tag, kind: equity_tag, tier: bot}
+  - {id: jev, kind: decision, tier: decision, model: typesafe/jev-1.13, max_cost_per_call: 0.002}
+  - {id: pplx_decider, kind: decision, tier: decision, model: perplexity/pplx-decider-v1-27b, max_cost_per_call: 0.002, concurrency: 2, min_interval_s: 0.5}
+  - id: luna
+    kind: chat
+    tier: cheap
+    model: openai/gpt-6-luna
+    max_tokens: 32768
+    max_cost_per_call: 0.02
+    provider: {only: [openai], allow_fallbacks: false}
+  - id: muse_contrib
+    kind: chat
+    tier: cheap
+    model: meta/muse-spark-1.3-contributor
+    max_tokens: 32768
+    max_cost_per_call: 0.012
+    provider: {only: [meta], allow_fallbacks: false}
+  - id: sol
+    kind: chat
+    tier: sota
+    model: openai/gpt-6.1-sol
+    max_tokens: 32768
+    max_cost_per_call: 0.35
+    concurrency: 6
+    provider: {only: [openai], allow_fallbacks: false}
+  - id: opus
+    kind: chat
+    tier: sota
+    model: anthropic/claude-opus-5.5
+    max_tokens: 32768
+    max_cost_per_call: 0.70
+    concurrency: 6
+    provider: {only: [anthropic], allow_fallbacks: false}
+schedule:
+  mode: pairs
+  pairs:
+    - [sol, equity_tag]
+    - [sol, jev]
+    - [sol, pplx_decider]
+    - [sol, luna]
+    - [sol, muse_contrib]
+    - [opus, equity_tag]
+    - [opus, jev]
+    - [opus, pplx_decider]
+    - [opus, luna]
+    - [opus, muse_contrib]
+    - [sol, opus]

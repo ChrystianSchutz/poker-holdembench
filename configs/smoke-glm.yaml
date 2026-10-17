@@ -1,0 +1,14 @@
+name: smoke-02-glm-medium
+variant: nl
+deals: 2
+deal_seed: 900000
+budget_usd: 0.05
+agents:
+  - {id: equity_tag, kind: equity_tag, tier: bot}
+  - id: glm_flash
+    kind: chat
+    tier: cheap
+    model: z-ai/glm-5.3-flash
+    structured: json_object
+    reasoning: {effort: medium, exclude: true}
+    provider: {only: [z-ai/fp8], allow_fallbacks: false}

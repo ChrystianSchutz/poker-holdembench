@@ -1,0 +1,12 @@
+# Free baseline league: every bot pair, 100 duplicate deals (200 hands per pair).
+name: bots
+variant: nl
+deals: 100
+deal_seed: 1000
+budget_usd: 0
+agents:
+  - {id: random, kind: random, tier: bot}
+  - {id: calling_station, kind: calling_station, tier: bot}
+  - {id: maniac, kind: maniac, tier: bot}
+  - {id: rock, kind: rock, tier: bot}
+  - {id: equity_tag, kind: equity_tag, tier: bot}

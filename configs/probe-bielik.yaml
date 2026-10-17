@@ -1,0 +1,15 @@
+# Probe-only config for Bielik (local, $0); budget only satisfies the guard on the shared probe dir.
+name: probe-bielik
+budget_usd: 5.0
+agents:
+- id: bielik
+  kind: chat
+  tier: local
+  model: Bielik-11B-v3.0-Instruct.Q8_0
+  base_url: http://localhost:3000
+  reasoning: {}
+  structured: json_object
+  max_tokens: 512
+  max_cost_per_call: 0.0
+  concurrency: 1
+  timeout_s: 600

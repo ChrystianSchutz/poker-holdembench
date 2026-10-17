@@ -1,0 +1,20 @@
+# Run 1A: decision models + reference bots, full round robin.
+# 28 pairs x 100 duplicate deals = 5,600 hands. Expected cost ~$0.3.
+# Mercury Decide (free, rate-limited) plays a separate smaller league: run1a-mercury.yaml.
+name: run1a-decision-league
+variant: nl
+deals: 100
+deal_seed: 100000
+budget_usd: 0.85
+match_concurrency: 40
+agents:
+  - {id: equity_tag, kind: equity_tag, tier: bot}
+  - {id: rock, kind: rock, tier: bot}
+  - {id: calling_station, kind: calling_station, tier: bot}
+  - {id: maniac, kind: maniac, tier: bot}
+  - {id: random, kind: random, tier: bot}
+  - {id: jev, kind: decision, tier: decision, model: typesafe/jev-1.13, max_cost_per_call: 0.002}
+  - {id: solar_decide, kind: decision, tier: decision, model: upstage/solar-decide, max_cost_per_call: 0.002}
+  - {id: pplx_decider, kind: decision, tier: decision, model: perplexity/pplx-decider-v1-27b, max_cost_per_call: 0.002, concurrency: 2, min_interval_s: 0.5}
+schedule:
+  mode: round_robin

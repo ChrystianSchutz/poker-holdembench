@@ -1,0 +1,74 @@
+﻿# Run 1B: cheap chat LLMs. Round robin among the five chat models, plus every chat model
+# against two anchors shared with Run 1A (equity_tag bot and Jev) so both leagues form one
+# connected rating graph. 20 pairs x 25 duplicate deals = 1000 hands (first run used 20 deals;
+# extended to 25, which only appends deals with new seeds).
+# Forecast from smoke tests: ~$2.4 (DeepSeek ~55%). Hard cap below.
+name: run1b-chat-league
+variant: nl
+deals: 25
+deal_seed: 200000
+budget_usd: 3.3
+match_concurrency: 20
+agents:
+  - {id: equity_tag, kind: equity_tag, tier: bot}
+  - {id: jev, kind: decision, tier: decision, model: typesafe/jev-1.13, max_cost_per_call: 0.002}
+  - id: luna
+    kind: chat
+    tier: cheap
+    model: openai/gpt-6-luna
+    max_tokens: 32768
+    max_cost_per_call: 0.02
+    provider: {only: [openai], allow_fallbacks: false}
+  - id: muse_contrib
+    kind: chat
+    tier: cheap
+    model: meta/muse-spark-1.3-contributor
+    max_tokens: 32768
+    max_cost_per_call: 0.012
+    provider: {only: [meta], allow_fallbacks: false}
+  - id: deepseek_flash
+    kind: chat
+    tier: cheap
+    model: deepseek/deepseek-v4.1-flash
+    max_tokens: 32768
+    max_cost_per_call: 0.012
+    provider: {only: [decart/fp4], allow_fallbacks: false}
+  - id: glm_flash
+    kind: chat
+    tier: cheap
+    model: z-ai/glm-5.3-flash
+    structured: json_object
+    reasoning: {effort: high, exclude: true}
+    max_tokens: 32768
+    max_cost_per_call: 0.012
+    provider: {only: [z-ai/fp8], allow_fallbacks: false}
+  - id: mimo_flash
+    kind: chat
+    tier: cheap
+    model: xiaomi/mimo-v2.6-flash
+    max_tokens: 32768
+    max_cost_per_call: 0.012
+    provider: {only: [xiaomi/fp8], allow_fallbacks: false}
+schedule:
+  mode: pairs
+  pairs:
+    - [luna, muse_contrib]
+    - [luna, deepseek_flash]
+    - [luna, glm_flash]
+    - [luna, mimo_flash]
+    - [muse_contrib, deepseek_flash]
+    - [muse_contrib, glm_flash]
+    - [muse_contrib, mimo_flash]
+    - [deepseek_flash, glm_flash]
+    - [deepseek_flash, mimo_flash]
+    - [glm_flash, mimo_flash]
+    - [equity_tag, luna]
+    - [equity_tag, muse_contrib]
+    - [equity_tag, deepseek_flash]
+    - [equity_tag, glm_flash]
+    - [equity_tag, mimo_flash]
+    - [jev, luna]
+    - [jev, muse_contrib]
+    - [jev, deepseek_flash]
+    - [jev, glm_flash]
+    - [jev, mimo_flash]

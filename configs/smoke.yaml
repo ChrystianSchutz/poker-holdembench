@@ -1,0 +1,54 @@
+# Route/format smoke: every paid agent plays 2 duplicate deals (4 hands) vs equity_tag.
+name: smoke-04
+variant: nl
+deals: 2
+deal_seed: 900000
+budget_usd: 0.15
+agents:
+  - {id: equity_tag, kind: equity_tag, tier: bot}
+  # Decision models (OpenRouter /alpha/decisions)
+  - {id: jev, kind: decision, tier: decision, model: typesafe/jev-1.13, max_cost_per_call: 0.002}
+  - {id: solar_decide, kind: decision, tier: decision, model: upstage/solar-decide, max_cost_per_call: 0.002}
+  - {id: mercury_decide, kind: decision, tier: decision, model: "inception/mercury-decide:free", max_cost_per_call: 0.002, min_interval_s: 3.1, concurrency: 4}
+  - {id: pplx_decider, kind: decision, tier: decision, model: perplexity/pplx-decider-v1-27b, max_cost_per_call: 0.002}
+  # Cheap chat LLMs, first-party or previously validated routes, reasoning on (hidden)
+  - id: luna
+    kind: chat
+    tier: cheap
+    model: openai/gpt-6-luna
+    provider: {only: [openai], allow_fallbacks: false}
+  - id: muse_contrib
+    kind: chat
+    tier: cheap
+    model: meta/muse-spark-1.3-contributor
+    provider: {only: [meta], allow_fallbacks: false}
+  - id: deepseek_flash
+    kind: chat
+    tier: cheap
+    model: deepseek/deepseek-v4.1-flash
+    provider: {only: [decart/fp4], allow_fallbacks: false}
+  - id: glm_flash
+    kind: chat
+    tier: cheap
+    model: z-ai/glm-5.3-flash
+    structured: json_object
+    reasoning: {effort: high, exclude: true}
+    max_tokens: 16000
+    provider: {only: [z-ai/fp8], allow_fallbacks: false}
+  - id: mimo_flash
+    kind: chat
+    tier: cheap
+    model: xiaomi/mimo-v2.6-flash
+    provider: {only: [xiaomi/fp8], allow_fallbacks: false}
+schedule:
+  mode: pairs
+  pairs:
+    - [equity_tag, jev]
+    - [equity_tag, solar_decide]
+    - [equity_tag, mercury_decide]
+    - [equity_tag, pplx_decider]
+    - [equity_tag, luna]
+    - [equity_tag, muse_contrib]
+    - [equity_tag, deepseek_flash]
+    - [equity_tag, glm_flash]
+    - [equity_tag, mimo_flash]

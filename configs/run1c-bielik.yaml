@@ -1,0 +1,43 @@
+# Run 1C: Bielik 11B v3.0 Instruct (SpeakLeash, Polish open-weights model), run locally through
+# ThreadShelf's OpenAI-compatible API (llama.cpp, Q8_0 GGUF, RTX 3090 Ti). Bielik has no reasoning
+# mode; it answers the same English prompt as every other model, with the JSON schema enforced by
+# llama.cpp's grammar. It plays the five rated bridges from Run 1 on Run 1B's deals.
+# 5 pairs x 20 duplicate deals = 200 hands. Only the opponents' API calls cost money (~$0.06).
+name: run1c-bielik
+variant: nl
+deals: 20
+deal_seed: 200000
+budget_usd: 0.2
+match_concurrency: 5
+agents:
+  - id: bielik
+    kind: chat
+    tier: local
+    model: Bielik-11B-v3.0-Instruct.Q8_0
+    base_url: http://localhost:3000
+    reasoning: {}
+    structured: json_object
+    max_tokens: 512
+    max_cost_per_call: 0.0
+    concurrency: 1
+    timeout_s: 600
+  - {id: equity_tag, kind: equity_tag, tier: bot}
+  - {id: jev, kind: decision, tier: decision, model: typesafe/jev-1.13, max_cost_per_call: 0.002}
+  - {id: pplx_decider, kind: decision, tier: decision, model: perplexity/pplx-decider-v1-27b, max_cost_per_call: 0.002, concurrency: 2, min_interval_s: 0.5}
+  - id: luna
+    kind: chat
+    tier: cheap
+    model: openai/gpt-6-luna
+    max_tokens: 32768
+    max_cost_per_call: 0.02
+    provider: {only: [openai], allow_fallbacks: false}
+  - id: muse_contrib
+    kind: chat
+    tier: cheap
+    model: meta/muse-spark-1.3-contributor
+    max_tokens: 32768
+    max_cost_per_call: 0.012
+    provider: {only: [meta], allow_fallbacks: false}
+schedule:
+  mode: focus
+  focus: [bielik]

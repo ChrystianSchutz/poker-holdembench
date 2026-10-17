@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use HoldemBench or its data, please cite it as below."
+title: "HoldemBench: Duplicate Heads-Up Hold'em as a Cheap, Variance-Controlled Benchmark for Decision Models, Chat LLMs, Local Models and Scripts"
+type: software
+authors:
+  - family-names: Schutz
+    given-names: Chrystian
+date-released: 2026-10-05
+license: MIT
+url: "https://chrystianschutz.com/blog/ai-poker-holdembench/"
+repository-code: "https://github.com/ChrystianSchutz/poker-holdembench"
+repository-artifact: "https://huggingface.co/datasets/chrystians/poker-holdembench"

@@ -1,0 +1,42 @@
+# Run 2b: confirmation of Run 2's surprise (the 30-line equity_tag script beat both frontier
+# models head-to-head over 20 deals). Fresh deals (seed 310000), 50 per pair = 200 hands.
+# Forecast ~$1.4 (Opus ~$0.0056 and Sol ~$0.0025 per decision in Run 2).
+name: run2b-confirm
+variant: nl
+deals: 50
+deal_seed: 310000
+budget_usd: 5.5
+match_concurrency: 2
+agents:
+- id: equity_tag
+  kind: equity_tag
+  tier: bot
+- id: sol
+  kind: chat
+  tier: sota
+  model: openai/gpt-6.1-sol
+  max_tokens: 32768
+  max_cost_per_call: 0.35
+  concurrency: 6
+  provider:
+    only:
+    - openai
+    allow_fallbacks: false
+- id: opus
+  kind: chat
+  tier: sota
+  model: anthropic/claude-opus-5.5
+  max_tokens: 32768
+  max_cost_per_call: 0.7
+  concurrency: 6
+  provider:
+    only:
+    - anthropic
+    allow_fallbacks: false
+schedule:
+  mode: pairs
+  pairs:
+  - - sol
+    - equity_tag
+  - - opus
+    - equity_tag
